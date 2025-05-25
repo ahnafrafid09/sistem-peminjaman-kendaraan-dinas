@@ -1,0 +1,57 @@
+/* public/css/login.css */
+
+body {
+    background: url('/img/background_login.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Nunito', sans-serif;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+    width: 700px;
+    max-width: 90%;
+}
+
+.bg-logo {
+    background: #f8f9fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.bg-logo img {
+    width: 180px;
+}
+
+.form-login {
+    padding: 40px;
+}
+
+.btn-gradient {
+    background: linear-gradient(to right, #4e73df, #224abe);
+    color: white;
+    border: none;
+}
+
+.captcha-box {
+    display: flex;
+    align-items: center;
+}
+
+.captcha-code {
+    background: #f8d7da;
+    padding: 8px 20px;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-weight: bold;
+    color: #dc3545;
+}
