@@ -10,7 +10,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- File CSS lokal -->
-    <link rel="stylesheet" href="css/landing.css">
+
+    <link rel="stylesheet" href="/css/landing.css"> 
+    {{-- {{ asset('css/landing.css') }} --}}
 </head>
 
 <body>
@@ -309,8 +311,8 @@
                     <div class="card team-card">
                         <img src="img/Picture6.png" class="card-img-top" alt="Team Member">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Nama Anggota Baru</h5>
-                            <p class="card-text text-muted">NIM Anggota Baru</p>
+                            <h5 class="card-title">Aditya Abrar</h5>
+                            <p class="card-text text-muted">4342411089</p>
                         </div>
                     </div>
                 </div>

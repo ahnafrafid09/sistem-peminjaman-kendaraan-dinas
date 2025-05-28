@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // 'loginDosen'  => [
+        //     'driver' => 'session',
+        //     'provider' => 'para_dosen',
+        // ],
     ],
 
     /*
@@ -64,6 +69,11 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
+
+        // 'para_dosen' => [
+        //     'driver' => 'eloquent',
+        //     'model' => env('AUTH_MODEL', App\Models\Dosen::class),
+        // ],
 
         // 'users' => [
         //     'driver' => 'database',

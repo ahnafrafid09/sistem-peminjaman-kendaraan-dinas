@@ -9,6 +9,15 @@ class Prodi extends Model
 {
     use HasFactory;
 
-    protected $table = 'prodi'; // sesuaikan juga
-    protected $guarded = [];
+    protected $fillable = ['jurusan_id', 'nama_prodi'];
+
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }
