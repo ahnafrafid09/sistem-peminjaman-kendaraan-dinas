@@ -3,70 +3,60 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+use App\Models\Jurusan;
+use App\Models\Prodi;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
-    use RegistersUsers;
-
     /**
-     * Where to redirect users after registration.
-     *
-     * @var string
+     * Tampilkan form registrasi.
      */
-    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function showRegisterForm()
     {
-        $this->middleware('guest');
+        $jurusan = Jurusan::all();
+        $prodi = Prodi::all();
+        return view('auth.register', compact('jurusan', 'prodi'));
     }
 
     /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
+     * Simpan data registrasi ke database.
      */
-    protected function validator(array $data)
+    public function register(Request $request)
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'username'     => 'required|string|max:255',
+            'email'        => 'required|email|unique:users,email',
+            'password'     => 'required|min:6|confirmed',
+            'jurusan_id'   => 'required|exists:jurusan,id',
+            'prodi_id'     => 'required|exists:prodi,id',
+            'no_telepon'   => 'required|string|max:20',
+            'nik'          => 'required|string|max:20',
+            'alamat'       => 'required|string|max:255',
         ]);
-    }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Simpan user
+        User::create([
+            'username'   => $request->username,
+            'email'      => $request->email,
+            'password'   => Hash::make($request->password),
+            'jurusan_id' => $request->jurusan_id,
+            'prodi_id'   => $request->prodi_id,
+            'no_telepon' => $request->no_telepon,
+            'status'     => 'aktif', // default langsung aktif
+            'nik'        => $request->nik,
+            'alamat'     => $request->alamat,
         ]);
+
+        // Redirect ke login dengan pesan sukses
+        return redirect()->route('auth.login')->with('success', 'Registrasi berhasil! Silakan login.');
     }
 }

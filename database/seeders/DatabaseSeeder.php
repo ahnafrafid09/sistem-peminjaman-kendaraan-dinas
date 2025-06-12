@@ -15,99 +15,94 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // Jurusan
-        $jurusan = [
-            ['nama_jurusan' => 'Teknik Informatika'],
-            ['nama_jurusan' => 'Teknik Mesin'],
-            ['nama_jurusan' => 'Teknik Elektro'],
-            ['nama_jurusan' => 'Manajemen'],
-            ['nama_jurusan' => 'Akuntansi'],
-        ];
-        Jurusan::insert($jurusan);
+        // Create Jurusan
+        $jurusan = \App\Models\Jurusan::create(['nama_jurusan' => 'Teknik Informatika']);
+        $jurusan2 = \App\Models\Jurusan::create(['nama_jurusan' => 'Teknik Mesin']);
 
-        // Prodi
-        $prodi = [
-            ['jurusan_id' => 1, 'nama_prodi' => 'Animasi'],
-            ['jurusan_id' => 1, 'nama_prodi' => 'Teknik Informatika'],
-            ['jurusan_id' => 2, 'nama_prodi' => 'Teknik Mesin'],
-            ['jurusan_id' => 3, 'nama_prodi' => 'Teknik Elektro'],
-            ['jurusan_id' => 4, 'nama_prodi' => 'Manajemen Bisnis'],
-        ];
-        Prodi::insert($prodi);
+        // Create Prodi
+        $prodi1 = \App\Models\Prodi::create([
+            'jurusan_id' => $jurusan->id,
+            'nama_prodi' => 'Animasi'
+        ]);
 
-        // Merek Mobil
-        $merek = [
-            ['nama' => 'Toyota'],
-            ['nama' => 'Honda'],
-            ['nama' => 'Suzuki'],
-            ['nama' => 'Daihatsu'],
-            ['nama' => 'Mitsubishi'],
-        ];
-        MerekMobil::insert($merek);
+        $prodi2 = \App\Models\Prodi::create([
+            'jurusan_id' => $jurusan->id,
+            'nama_prodi' => 'Teknik Informatika'
+        ]);
 
-        // Lokasi
-        $lokasi = [
-            ['lokasi' => 'Garasi Kampus A'],
-            ['lokasi' => 'Garasi Kampus B'],
-            ['lokasi' => 'Parkiran Dosen'],
-            ['lokasi' => 'Parkiran Mahasiswa'],
-            ['lokasi' => 'Bengkel Kampus'],
-        ];
-        Lokasi::insert($lokasi);
+        // Create Lokasi
+        $lokasi = \App\Models\Lokasi::create(['lokasi' => 'Garasi Kampus A']);
+        $lokasi2 = \App\Models\Lokasi::create(['lokasi' => 'Parkiran Mahasiswa']);
 
-        // Mobil
-        $mobil = [
-            [
-                'merek_mobil_id' => 1,
-                'lokasi_awal' => 1,
-                'plat_nomor' => 'B 1234 ABC',
-                'tahun_pembuatan' => 2020,
-                'status_ketersediaan' => 'Tersedia',
-                'status_kondisi' => 'Baik',
-                'kapasitas_penumpang' => 5,
-                'warna' => 'Hitam',
-                'jurusan_id' => 1,
-                'tanggal_servis_terakhir' => '2025-01-10',
-            ],
-            // Add other mobil data...
-        ];
-        Mobil::insert($mobil);
+        // Create Merek Mobil
+        $toyota = \App\Models\MerekMobil::create(['nama' => 'Toyota']);
+        $honda = \App\Models\MerekMobil::create(['nama' => 'Honda']);
 
-        // Users
-        User::create([
-            'nama' => 'Admin',
-            'email' => 'admin@polibatam.ac.id',
-            'password' => Hash::make('password'),
+        // Create Mobil
+        \App\Models\Mobil::create([
+            'merek_mobil_id' => $toyota->id,
+            'lokasi_awal' => $lokasi->id,
+            'plat_nomor' => 'B 1234 ABC',
+            'tahun_pembuatan' => 2020,
+            'status_ketersediaan' => 'Tersedia',
+            'status_kondisi' => 'Baik',
+            'kapasitas_penumpang' => 5,
+            'warna' => 'Hitam',
+            'jurusan_id' => $jurusan->id,
+            'tanggal_servis_terakhir' => '2025-01-10'
+        ]);
+
+        \App\Models\Mobil::create([
+            'merek_mobil_id' => $honda->id,
+            'lokasi_awal' => $lokasi2->id,
+            'plat_nomor' => 'D 5678 XYZ',
+            'tahun_pembuatan' => 2019,
+            'status_ketersediaan' => 'Tersedia',
+            'status_kondisi' => 'Baik',
+            'kapasitas_penumpang' => 7,
+            'warna' => 'Putih',
+            'jurusan_id' => $jurusan2->id,
+            'tanggal_servis_terakhir' => '2025-02-15'
+        ]);
+
+        // Create Users
+        \App\Models\User::create([
+            'username' => 'Super Admin',
+            'email' => 'admin@amkd.test',
+            'password' => bcrypt('password'),
             'role' => 'super_admin',
-            'jurusan_id' => 1,
-            'prodi_id' => 1,
+            'jurusan_id' => $jurusan->id,
+            'prodi_id' => $prodi1->id,
             'no_telepon' => '081234567890',
             'nik' => '1234567890123456',
-            'alamat' => 'Politeknik Negeri Batam',
+            'status' => 'aktif',
+            'alamat' => 'Alamat Super Admin'
         ]);
 
-        User::create([
-            'nama' => 'Kepala Unit TI',
-            'email' => 'kepalati@polibatam.ac.id',
-            'password' => Hash::make('password'),
+        \App\Models\User::create([
+            'username' => 'Kepala Unit',
+            'email' => 'kepala@amkd.test',
+            'password' => bcrypt('password'),
             'role' => 'kepala_unit',
-            'jurusan_id' => 1,
-            'prodi_id' => 2,
+            'jurusan_id' => $jurusan->id,
+            'prodi_id' => $prodi2->id,
             'no_telepon' => '081234567891',
             'nik' => '1234567890123457',
-            'alamat' => 'Politeknik Negeri Batam',
+            'status' => 'aktif',
+            'alamat' => 'Alamat Kepala Unit'
         ]);
 
-        User::create([
-            'nama' => 'Dosen TI',
-            'email' => 'dosen@polibatam.ac.id',
-            'password' => Hash::make('password'),
+        \App\Models\User::create([
+            'username' => 'Pegawai',
+            'email' => 'pegawai@amkd.test',
+            'password' => bcrypt('password'),
             'role' => 'pegawai',
-            'jurusan_id' => 1,
-            'prodi_id' => 2,
+            'jurusan_id' => $jurusan2->id,
+            'prodi_id' => null,
             'no_telepon' => '081234567892',
             'nik' => '1234567890123458',
-            'alamat' => 'Politeknik Negeri Batam',
+            'status' => 'aktif',
+            'alamat' => 'Alamat Pegawai'
         ]);
     }
 }

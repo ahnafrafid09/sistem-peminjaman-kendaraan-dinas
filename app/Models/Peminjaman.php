@@ -9,6 +9,8 @@ class Peminjaman extends Model
 {
     use HasFactory;
 
+    protected $table = 'peminjaman';
+
     protected $fillable = [
         'user_id',
         'mobil_id',
@@ -24,7 +26,9 @@ class Peminjaman extends Model
         'kepala_unit_id',
         'catatan_kepala_unit',
         'catatan_pengembalian',
-        'lokasi_peminjaman'
+        'lokasi_peminjaman',
+        'kepemilikan_sim',
+        'lokasi_id'
     ];
 
     protected $casts = [
@@ -49,7 +53,7 @@ class Peminjaman extends Model
 
     public function lokasiPeminjaman()
     {
-        return $this->belongsTo(Lokasi::class, 'lokasi_peminjaman');
+        return $this->belongsTo(Lokasi::class, 'lokasi_id');
     }
 
     public function pengembalian()

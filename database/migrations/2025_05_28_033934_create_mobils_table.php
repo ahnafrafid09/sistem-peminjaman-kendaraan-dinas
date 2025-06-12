@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('mobils', function (Blueprint $table) {
+        Schema::create('mobil', function (Blueprint $table) {
             $table->id();
             $table->foreignId('merek_mobil_id')->constrained('merek_mobil');
             $table->foreignId('lokasi_awal')->constrained('lokasi');
@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('status_kondisi', ['Baik', 'Perlu Service', 'Rusak'])->default('Baik');
             $table->integer('kapasitas_penumpang');
             $table->string('warna', 50);
-            $table->foreignId('jurusan_id')->constrained('jurusans');
+            $table->foreignId('jurusan_id')->constrained('jurusan');
             $table->date('tanggal_servis_terakhir');
             $table->timestamps();
         });

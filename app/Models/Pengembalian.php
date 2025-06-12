@@ -9,10 +9,13 @@ class Pengembalian extends Model
 {
     use HasFactory;
 
+    protected $table = 'pengembalian';
+
     protected $fillable = [
         'peminjaman_id',
-        'tanggal_pengembalian',
-        'lokasi_pengembalian',
+        'catatan_pengembalian',
+        'lokasi_id',
+        'status',
         'kondisi_sesudah'
     ];
 

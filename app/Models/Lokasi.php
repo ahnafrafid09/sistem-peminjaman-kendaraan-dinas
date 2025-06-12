@@ -9,6 +9,8 @@ class Lokasi extends Model
 {
     use HasFactory;
 
+    protected $table = 'lokasi';
+
     protected $fillable = ['lokasi'];
 
     public function mobil()
@@ -18,7 +20,7 @@ class Lokasi extends Model
 
     public function peminjaman()
     {
-        return $this->hasMany(Peminjaman::class, 'lokasi_peminjaman');
+        return $this->hasMany(Peminjaman::class, 'lokasi_id');
     }
 
     public function pengembalian()

@@ -3,48 +3,46 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use GuzzleHttp\Psr7\Request;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
-    // public function proses_login(Request $request) {
-    //     // Validasi
-
-    //     // Auth::guard('loginDosen')->attempt( [ username => $request->username ] , password );
-
-    //     if ( Auth::guard('loginDosen')->check()) {
-    //     } 
-    // }
-
-    use AuthenticatesUsers;
-
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function showLoginForm()
     {
-        $this->middleware('guest')->except('logout');
-        $this->middleware('auth')->only('logout');
+        return view('auth.login');
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
+
+            $request->session()->regenerate();
+            switch (Auth::user()->role) {
+                case 'super_admin':
+                    return redirect()->route('admin.dashboard.index');
+                case 'pegawai':
+                    return redirect()->route('pegawai.dashboard.index');
+                case 'kepala_unit':
+                    return redirect()->route('kepala-unit.dashboard.index');
+                default:
+                    Auth::logout();
+                    return back()
+                        ->withErrors(['role' => 'Role tidak dikenali.']);
+            }
+        }
+
+        return back()->withErrors(['username' => 'Username atau password salah.'])->withInput();
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        return redirect()->route('login');
     }
 }

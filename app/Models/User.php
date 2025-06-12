@@ -10,8 +10,10 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected $table = 'users';
+
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
         'role',
@@ -66,6 +68,10 @@ class User extends Authenticatable
 
     public function isPegawai()
     {
-        return $this->role === 'dosen';
+        return $this->role === 'pegawai';
+    }
+    public function receivesBroadcastNotificationsOn()
+    {
+        return 'notifikasi.' . $this->id;
     }
 }

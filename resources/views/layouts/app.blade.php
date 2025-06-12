@@ -1,80 +1,96 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html>
+<html lang="id">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMKD - @yield('title')</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 </head>
+
 <body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+    @include('partials.sidebar')
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
+    <div class="d-flex flex-column flex-lg-row" style="min-height: 100vh;">
+        <div class="flex-grow-1" id="mainContent">
+            {{-- Navbar --}}
+            @include('partials.navbar')
 
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
+            {{-- Main content --}}
+            <main class="p-4">
+                <h2>@yield('title')</h2>
+                <div class="mt-5">
+                    @yield('content')
                 </div>
-            </div>
-        </nav>
-
-        <main class="py-4">
-            @yield('content')
-        </main>
+            </main>
+        </div>
     </div>
+    @stack('scripts')
+    <script>
+        document.getElementById('resetButton').addEventListener('click', function() {
+            document.getElementById('form').reset();
+        });
+    </script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const mainContent = document.getElementById('mainContent');
+
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('d-none');
+            });
+        }
+    </script>
+    @if (Auth::check() && Auth::user()->isKepalaUnit())
+        <div id="notification-area" class="position-fixed top-0 end-0 p-3" style="z-index: 1055;"></div>
+
+        <script type="module">
+            window.Echo = new Echo({
+                broadcaster: 'reverb',
+                key: '{{ env('VITE_REVERB_APP_KEY') }}',
+                host: window.location.hostname,
+            });
+
+            Echo.private(`notifikasi.{{ auth()->id() }}`)
+                .listen('.peminjaman.baru', (e) => {
+                    const area = document.getElementById('notification-area');
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-info alert-dismissible fade show shadow mb-2';
+                    alert.setAttribute('role', 'alert');
+                    alert.innerHTML = `
+                    <strong>📩 Notifikasi:</strong> ${e.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                    area.appendChild(alert);
+
+                    setTimeout(() => {
+                        const alertInstance = bootstrap.Alert.getOrCreateInstance(alert);
+                        alertInstance.close();
+                    }, 5000);
+                });
+        </script>
+    @endif
+    {{-- <script>
+        function updateNavbarToggleVisibility() {
+            const sidebar = document.getElementById('sidebar');
+            const navbarToggle = document.getElementById('navbarToggle');
+
+            const isSidebarVisible = window.getComputedStyle(sidebar).display !== 'none';
+
+            if (window.innerWidth < 992 && !isSidebarVisible) {
+                navbarToggle.style.display = 'block';
+            } else {
+                navbarToggle.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('resize', updateNavbarToggleVisibility);
+        window.addEventListener('DOMContentLoaded', updateNavbarToggleVisibility);
+    </script> --}}
 </body>
+
 </html>

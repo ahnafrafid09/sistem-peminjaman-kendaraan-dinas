@@ -9,6 +9,8 @@ class Mobil extends Model
 {
     use HasFactory;
 
+    protected $table = 'mobil';
+
     protected $fillable = [
         'merek_mobil_id',
         'lokasi_awal',
